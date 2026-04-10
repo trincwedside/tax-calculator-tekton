@@ -7,9 +7,9 @@ spec:
     name: tax-calculator-pipeline
   params:
     - name: image-url
-      value: us.icr.io/sn-labs-yournamespace/tax-calculator:latest
+      value: us.icr.io/sn-labs-trincwedside/tax-calculator:latest
     - name: repo-url
-      value: https://github.com/yourusername/tax-calculator.git
+      value: https://github.com/trincwedside/tax-calculator-tekton.git
   workspaces:
     - name: source
       persistentVolumeClaim:

@@ -17,6 +17,7 @@ spec:
     - name: clone-repo
       taskRef:
         name: git-clone
+        kind: ClusterTask
       workspaces:
         - name: output
           workspace: source
@@ -26,7 +27,7 @@ spec:
 
     - name: npminstall
       taskRef:
-        name: npm-install
+        name: npm
       runAfter:
         - clone-repo
       workspaces:
@@ -35,7 +36,7 @@ spec:
 
     - name: tests
       taskRef:
-        name: run-tests-jasmine
+        name: jasmine
       runAfter:
         - npminstall
       workspaces:
