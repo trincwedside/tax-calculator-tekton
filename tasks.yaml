@@ -6,11 +6,13 @@ spec:
   workspaces:
     - name: source
   steps:
-    - name: npm-install
-      image: node:18-alpine
+    - name: npm
+      image: node:alpine3.17
       workingDir: $(workspaces.source.path)
-      command: ["npm"]
-      args: ["install"]
+      command: ["/bin/sh"]
+      args:
+        - "-c"
+        - "npm install && npm fund"
 
 ---
 
@@ -22,8 +24,10 @@ spec:
   workspaces:
     - name: source
   steps:
-    - name: run-jasmine-tests
-      image: node:18-alpine
+    - name: jasmine
+      image: node:alpine3.17
       workingDir: $(workspaces.source.path)
-      command: ["npx"]
-      args: ["jasmine"]
+      command: ["/bin/sh"]
+      args:
+        - "-c"
+        - "npm install -g jasmine && jasmine"

@@ -6,30 +6,27 @@ spec:
   params:
     - name: image-url
       type: string
-      description: The URL of the image to build and push
     - name: repo-url
       type: string
-      description: The URL of the git repository to clone
   workspaces:
     - name: source
   tasks:
-
-    - name: clone-repo
+    - name: clone
       taskRef:
         name: git-clone
         kind: ClusterTask
-      workspaces:
-        - name: output
-          workspace: source
       params:
         - name: url
           value: $(params.repo-url)
+      workspaces:
+        - name: output
+          workspace: source
 
     - name: npminstall
       taskRef:
         name: npm
       runAfter:
-        - clone-repo
+        - clone
       workspaces:
         - name: source
           workspace: source
@@ -52,6 +49,8 @@ spec:
       params:
         - name: IMAGE
           value: $(params.image-url)
+        - name: DOCKERFILE
+          value: ./Dockerfile
       workspaces:
         - name: source
           workspace: source
