@@ -1,0 +1,56 @@
+apiVersion: tekton.dev/v1beta1
+kind: Pipeline
+metadata:
+  name: tax-calculator-pipeline
+spec:
+  params:
+    - name: image-url
+      type: string
+      description: The URL of the image to build and push
+    - name: repo-url
+      type: string
+      description: The URL of the git repository to clone
+  workspaces:
+    - name: source
+  tasks:
+
+    - name: clone-repo
+      taskRef:
+        name: git-clone
+      workspaces:
+        - name: output
+          workspace: source
+      params:
+        - name: url
+          value: $(params.repo-url)
+
+    - name: npminstall
+      taskRef:
+        name: npm-install
+      runAfter:
+        - clone-repo
+      workspaces:
+        - name: source
+          workspace: source
+
+    - name: tests
+      taskRef:
+        name: run-tests-jasmine
+      runAfter:
+        - npminstall
+      workspaces:
+        - name: source
+          workspace: source
+
+    - name: build
+      taskRef:
+        name: buildah
+        kind: ClusterTask
+      runAfter:
+        - tests
+      params:
+        - name: IMAGE
+          value: $(params.image-url)
+      workspaces:
+        - name: source
+          workspace: source
